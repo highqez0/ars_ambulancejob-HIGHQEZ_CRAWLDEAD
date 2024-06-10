@@ -75,6 +75,9 @@ function healPlayer()
 end
 
 RegisterNetEvent("ars_ambulancejob:healPlayer", function(data)
+    if exports['highqez_crawldead']:IsCrawling() then  -- Added Code (highqez_crawldead)
+        exports['highqez_crawldead']:EndCrawl()        -- Added Code (highqez_crawldead)
+    end                                                -- Added Code (highqez_crawldead)
     if data.revive then
         stopPlayerDeath()
     elseif data.injury then
@@ -269,6 +272,15 @@ AddEventHandler('gameEventTriggered', function(event, data)
     local victimDiedAndPlayer = victimDied and NetworkGetPlayerIndexFromPed(victim) == playerPed and (IsPedDeadOrDying(victim, true) or IsPedFatallyInjured(victim))
 
     if victimDiedAndPlayer then
+        if exports['highqez_crawldead']:IsCrawling() then
+            exports['highqez_crawldead']:EndCrawl()
+        elseif exports['highqez_crawldead']:IsDead() then
+        elseif not exports['highqez_crawldead']:IsCrawling() then
+            exports['highqez_crawldead']:StartCrawl()
+            return
+        else
+            return    
+        end
         local deathData = {}
 
         deathData.isDead = true
